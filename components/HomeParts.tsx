@@ -1,0 +1,201 @@
+"use client";
+
+import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import type { CommunityPlaylist, Track } from "@/lib/types";
+import { usePlayer } from "@/lib/player";
+import { useToast } from "@/components/Toast";
+import { PlayIcon, PauseIcon } from "@/components/Icons";
+import { getRank, formatListening } from "@/lib/rank";
+import {
+  SearchLineIcon,
+  GearIcon,
+  CrownIcon,
+  VerifiedIcon,
+  ChevronRightIcon,
+  ArrowRightIcon,
+  RankMedalIcon,
+  RankEmblem,
+} from "@/components/HomeIcons";
+
+/* ── Baris atas: logo + tombol cari ── */
+export function HomeHeader() {
+  const router = useRouter();
+  const player = usePlayer();
+  return (
+    <header className="hm-header hm-inset">
+      <div className="hm-brand-lockup" aria-label="Nexaa Music">
+        <div className={`hm-logo-wrap${player.playing ? " is-playing" : ""}`}>
+          {/* Logo dikelilingi bar equalizer radial yang melompat seperti beat */}
+          <div className="hm-logo-bullet">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/icons/icon-192.png" alt="Nexaa" width={44} height={44} />
+          </div>
+          <span className="hm-logo-eq" aria-hidden="true">
+            {Array.from({ length: 24 }, (_, i) => <i key={i} style={{ "--eq-i": i, "--eq-angle": `${i * 15}deg` } as React.CSSProperties} />)}
+          </span>
+        </div>
+        <div className="hm-brand-copy">
+          <div className="hm-brand-name">NEXAA<span> MUSIC</span></div>
+          <div className="hm-brand-tagline">MORE MUSIC, MORE VIBES</div>
+          <div className="hm-brand-wave" aria-hidden="true">
+            {Array.from({ length: 19 }, (_, i) => <i key={i} style={{ "--wave-i": i } as React.CSSProperties} />)}
+          </div>
+        </div>
+      </div>
+      <div className="hm-actions">
+        <button className="hm-round" aria-label="Cari" onClick={() => router.push("/search")}>
+          <SearchLineIcon size={26} />
+        </button>
+      </div>
+    </header>
+  );
+}
+
+/* ── Kartu profil emas: emblem rank, jam dengar, tombol Profil ── */
+export function ProfileCard({ totalSeconds, title }: { totalSeconds: number; title: string }) {
+  const rank = getRank(totalSeconds / 3600);
+  return (
+    <Link href="/stats" className="hm-profile hm-inset" aria-label={`Profil: ${title}, ${formatListening(totalSeconds)}, ${rank.name}`}>
+      <span className="hm-emblem">
+        <RankEmblem color={rank.color} letter={rank.name.charAt(0)} size={62} />
+      </span>
+      <span className="hm-profile-body">
+        <span className="hm-profile-top">
+          <span className="hm-badge">
+            <CrownIcon size={14} />
+            #1 TOP LISTENER
+          </span>
+          <span className="hm-profile-id">
+            <span className="hm-profile-name">{title}</span>
+            <VerifiedIcon size={19} />
+          </span>
+        </span>
+        <span className="hm-profile-meta">
+          <strong>{formatListening(totalSeconds)}</strong>
+          <i className="hm-dot" />
+          <RankMedalIcon size={21} color={rank.color} />
+          <span>{rank.name}</span>
+        </span>
+      </span>
+      <span className="hm-profile-btn">
+        Profil
+        <ChevronRightIcon size={15} />
+      </span>
+    </Link>
+  );
+}
+
+/* ── Chip pintasan: History / Stats / Liked / Downloaded ── */
+export function QuickChips() {
+  const toast = useToast();
+  return (
+    <nav className="hm-chips" aria-label="Pintasan">
+      <Link href="/library?tab=recent" className="hm-chip">History</Link>
+      <Link href="/stats" className="hm-chip">Stats</Link>
+      <Link href="/library?tab=liked" className="hm-chip">Liked</Link>
+    </nav>
+  );
+}
+
+function hideBroken(e: React.SyntheticEvent<HTMLImageElement>) {
+  e.currentTarget.style.visibility = "hidden";
+}
+
+function CommunityCover({ p }: { p: CommunityPlaylist }) {
+  if (p.covers.length >= 4) {
+    return (
+      <span className="hm-cover hm-mosaic">
+        {p.covers.slice(0, 4).map((src, i) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img key={i} src={src} alt="" loading="lazy" decoding="async" referrerPolicy="no-referrer" onError={hideBroken} />
+        ))}
+      </span>
+    );
+  }
+  return (
+    <span className="hm-cover">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={p.thumb} alt="" loading="lazy" decoding="async" referrerPolicy="no-referrer" onError={hideBroken} />
+    </span>
+  );
+}
+
+function SkeletonCards() {
+  return (
+    <>
+      {[0, 1, 2, 3].map((i) => (
+        <div className="hm-card" key={i} aria-hidden="true">
+          <span className="hm-cover hm-skel" />
+          <span className="hm-skel hm-skel-line" style={{ width: "78%", marginTop: 12 }} />
+          <span className="hm-skel hm-skel-line" style={{ width: "50%", marginTop: 8, height: 11 }} />
+        </div>
+      ))}
+    </>
+  );
+}
+
+/* ── Trending community playlists (mosaic 2x2) ── */
+export function CommunityRow({ items }: { items: CommunityPlaylist[] | null }) {
+  // Sembunyikan jika kosong atau belum selesai dimuat
+  if (!items || items.length === 0) return null;
+  return (
+    <section className="hm-section" aria-label="Trending community playlists">
+      <div className="hm-section-head">
+        <h2 className="hm-title">Trending community playlists</h2>
+      </div>
+      <div className="hm-row">
+        {items.map((p) => (
+          <Link key={p.id} href={`/playlist/${p.id}`} prefetch={false} className="hm-card">
+            <CommunityCover p={p} />
+            <span className="hm-card-title">{p.name}</span>
+            <span className="hm-card-sub">{p.subtitle}</span>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ── New releases ── */
+export function ReleasesRow({ items }: { items: Track[] | null }) {
+  const player = usePlayer();
+  if (items && items.length === 0) return null;
+  return (
+    <section className="hm-section" aria-label="New releases">
+      <div className="hm-section-head">
+        <h2 className="hm-title">New releases</h2>
+        <Link href="/trending" className="hm-see-all" aria-label="Lihat semua rilis">
+          <ArrowRightIcon size={26} />
+        </Link>
+      </div>
+      <div className="hm-row">
+        {items ? (
+          items.map((t) => {
+            const isCurrent = player.current?.id === t.id;
+            const isPlaying = isCurrent && player.playing;
+            return (
+              <button
+                key={t.id}
+                className="hm-card"
+                aria-label={`${isPlaying ? "Jeda" : "Putar"} ${t.title} oleh ${t.artist}`}
+                onClick={() => (isCurrent ? player.toggle() : player.playTrack(t, items))}
+              >
+                <span className="hm-cover">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={t.thumb} alt="" loading="lazy" decoding="async" referrerPolicy="no-referrer" onError={hideBroken} />
+                  <span className="hm-play">{isPlaying ? <PauseIcon size={18} /> : <PlayIcon size={18} />}</span>
+                </span>
+                <span className="hm-card-title">{t.title}</span>
+                <span className="hm-card-sub">{t.artist || "Artis tidak diketahui"}</span>
+              </button>
+            );
+          })
+        ) : (
+          <SkeletonCards />
+        )}
+      </div>
+    </section>
+  );
+}

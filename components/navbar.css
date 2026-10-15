@@ -1,0 +1,79 @@
+/* NEXAA STUDIO — restrained solid navbar (less glass, cleaner contrast) */
+.nx-nav {
+  --nx-spring: cubic-bezier(0.34, 1.25, 0.5, 1);
+  --nx-amber: #f4f4f5;
+  position: fixed;
+  left: 12px; right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  max-width: 480px;
+  margin-left: auto; margin-right: auto;
+  height: 64px;
+  padding: 5px;
+  z-index: 60;
+  overflow: hidden;
+  border-radius: 22px;
+  background: #171719;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border: 1px solid rgba(255,255,255,0.09);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.035);
+  animation: nx-in 0.45s var(--nx-spring) 0.05s both;
+}
+.nx-nav::before { content: none; }
+@keyframes nx-in {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+.nx-track {
+  position: relative;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.nx-lens {
+  position: absolute; top: 3px; bottom: 3px; left: 0;
+  width: calc(100% / 5);
+  display: grid; place-items: center;
+  transform: translate3d(calc(var(--i, 0) * 100%), 0, 0);
+  transition: transform 0.42s var(--nx-spring), opacity 0.25s ease;
+  will-change: transform;
+  pointer-events: none;
+}
+.nx-track[data-idle="true"] .nx-lens { opacity: 0; }
+.nx-lens-core {
+  position: relative;
+  width: 46px; height: 46px;
+  border-radius: 15px;
+  background: #29292d;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.035);
+  animation: nx-squish 0.42s cubic-bezier(0.3, 0.9, 0.4, 1) both;
+}
+.nx-lens-core::after { content: none; }
+@keyframes nx-squish {
+  0% { transform: scale(0.94); }
+  60% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+.nx-item {
+  position: relative; z-index: 1;
+  display: grid; place-items: center;
+  border-radius: 16px;
+  color: rgba(220,220,225,0.58);
+  transition: color 0.22s ease;
+  outline: none;
+}
+.nx-ico { display: grid; place-items: center; transition: transform 0.22s var(--nx-spring); }
+.nx-item:active .nx-ico { transform: scale(0.9); }
+.nx-item.is-active { color: #fff; }
+.nx-item.is-active .nx-ico { filter: none; animation: nx-pop 0.35s var(--nx-spring) both; }
+@keyframes nx-pop { 0% { transform: scale(0.88); } 65% { transform: scale(1.08); } 100% { transform: scale(1); } }
+.nx-item:focus-visible { box-shadow: inset 0 0 0 2px rgba(255,255,255,0.55); }
+@media (hover: hover) {
+  .nx-item:not(.is-active):hover { color: rgba(255,255,255,0.9); }
+  .nx-item:not(.is-active):hover .nx-ico { transform: translateY(-1px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nx-nav, .nx-lens-core, .nx-item.is-active .nx-ico { animation: none; }
+  .nx-lens, .nx-ico, .nx-item { transition-duration: 0.01ms; }
+}
