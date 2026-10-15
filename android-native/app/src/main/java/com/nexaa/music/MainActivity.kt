@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         val play = Button(this).apply { text = "PUTAR DI PLAYER NATIVE"; setOnClickListener { val u = url.text.toString().trim(); if (u.isNotBlank()) playUrl(u, trackTitle.text.toString().ifBlank { "NexaMusic" }, null) } }
         val web = WebView(this).apply {
             settings.javaScriptEnabled = true; settings.domStorageEnabled = true; webChromeClient = WebChromeClient(); webViewClient = WebViewClient()
-            loadUrl("https://nexaasolar.vercel.app/")
+            loadUrl("https://nexaastudiov34.vercel.app/")
         }
         webView = web
         root.addView(title); root.addView(hint); root.addView(url); root.addView(trackTitle); root.addView(play)
