@@ -73,8 +73,8 @@ class MainActivity : AppCompatActivity() {
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundColor(0xFF0B0D1D.toInt()) }
         val title = TextView(this).apply { text = "NEXA MUSIC · NATIVE AUDIO PREVIEW"; setTextColor(0xFFE6E2FF.toInt()); textSize = 17f; gravity = Gravity.CENTER; setPadding(16,18,16,12) }
         val hint = TextView(this).apply { text = "Tes player native dengan URL audio langsung yang kamu punya izin untuk putar. Video ID YouTube bukan URL audio langsung."; setTextColor(0xFFB7B8CA.toInt()); textSize = 13f; setPadding(18,6,18,10) }
-        val url = EditText(this).apply { hint = "https://.../track.mp3"; setSingleLine(true); setTextColor(-1); setHintTextColor(0xFF88899A.toInt()); setPadding(16,12,16,12) }
-        val trackTitle = EditText(this).apply { hint = "Judul lagu"; setSingleLine(true); setTextColor(-1); setHintTextColor(0xFF88899A.toInt()); setPadding(16,12,16,12) }
+        val url = EditText(this).apply { this.hint = "https://.../track.mp3"; setSingleLine(true); setTextColor(-1); setHintTextColor(0xFF88899A.toInt()); setPadding(16,12,16,12) }
+        val trackTitle = EditText(this).apply { this.hint = "Judul lagu"; setSingleLine(true); setTextColor(-1); setHintTextColor(0xFF88899A.toInt()); setPadding(16,12,16,12) }
         val play = Button(this).apply { text = "PUTAR DI PLAYER NATIVE"; setOnClickListener { val u = url.text.toString().trim(); if (u.isNotBlank()) playUrl(u, trackTitle.text.toString().ifBlank { "NexaMusic" }, null) } }
         val web = WebView(this).apply {
             settings.javaScriptEnabled = true; settings.domStorageEnabled = true; webChromeClient = WebChromeClient(); webViewClient = WebViewClient()
