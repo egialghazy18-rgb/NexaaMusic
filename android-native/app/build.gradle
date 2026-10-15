@@ -13,6 +13,7 @@ android {
         versionCode 1
         versionName '1.0.0-native-preview'
     }
+<<<<<<< HEAD
 
     // Keep Java and Kotlin bytecode targets aligned; CI uses JDK 17.
     compileOptions {
@@ -23,6 +24,8 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+=======
+>>>>>>> 565832f3a4cd24acb292ab171761e30c4e62aa04
 }
 
 dependencies {
