@@ -1,0 +1,686 @@
+/* ═══════════════════════════════════════════════
+   BERANDA — navy night + emas (hm-*)
+   Dipakai hanya di halaman beranda: body.theme-home
+   ═══════════════════════════════════════════════ */
+body.theme-home { background: #0c1020; }
+body.theme-home #aurora-bg { display: none; }
+body.theme-home::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 46% at 50% -8%, rgba(96, 116, 255, 0.16), transparent 62%),
+    radial-gradient(80% 36% at 105% 102%, rgba(128, 76, 230, 0.12), transparent 64%);
+}
+/* sama persis, tapi lewat :has() supaya navy sudah aktif di paint pertama (tanpa kedip).
+   Dipisah dari rule di atas agar browser lama tanpa :has() tetap jalan lewat class. */
+body:has(.hm-page) { background: #0c1020; }
+body:has(.hm-page) #aurora-bg { display: none; }
+body:has(.hm-page)::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 46% at 50% -8%, rgba(96, 116, 255, 0.16), transparent 62%),
+    radial-gradient(80% 36% at 105% 102%, rgba(128, 76, 230, 0.12), transparent 64%);
+}
+
+.hm-page {
+  --hm-title: #b4c0ff;
+  --hm-text: #eef0f8;
+  --hm-muted: #98a0b8;
+  --hm-gold: #f0c453;
+  --hm-gold-line: rgba(226, 181, 62, 0.7);
+  --hm-btn: clamp(42px, 12.4vw, 54px);
+  --hm-card-w: clamp(124px, 33vw, 164px);
+  --hm-spring: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.hm-page.page {
+  padding-top: calc(14px + env(safe-area-inset-top));
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+/* satu momen masuk: tiap blok naik pelan berurutan */
+.hm-rise {
+  animation: hm-rise 0.6s var(--hm-spring) both;
+  animation-delay: calc(var(--d, 0) * 70ms);
+}
+@keyframes hm-rise {
+  from { opacity: 0; transform: translate3d(0, 14px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+.hm-inset { margin-left: 12px; margin-right: 12px; }
+
+/* ── header ── */
+.hm-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.hm-avatar {
+  flex: 0 0 auto;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  transition: transform 0.2s var(--hm-spring);
+}
+.hm-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.hm-avatar:active { transform: scale(0.92); }
+.hm-actions { display: flex; align-items: center; gap: clamp(6px, 2.4vw, 12px); }
+.hm-round {
+  width: var(--hm-btn); height: var(--hm-btn);
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.13);
+  color: #e9ebf5;
+  transition: background 0.2s ease, transform 0.2s var(--hm-spring);
+}
+.hm-round:active { transform: scale(0.9); background: rgba(255, 255, 255, 0.22); }
+
+.hm-greeting {
+  margin: 22px 12px 16px;
+  font-size: clamp(24px, 7vw, 30px);
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--hm-text);
+  overflow-wrap: anywhere;
+}
+
+/* ── kartu profil ── */
+.hm-profile {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px 10px 8px;
+  border-radius: 22px;
+  border: 1.5px solid var(--hm-gold-line);
+  background:
+    linear-gradient(180deg, rgba(226, 181, 62, 0.07), rgba(226, 181, 62, 0.02)),
+    rgba(14, 17, 30, 0.82);
+  box-shadow: inset 0 1px 0 rgba(255, 225, 140, 0.12), 0 10px 26px rgba(0, 0, 0, 0.28);
+  color: inherit;
+  transition: transform 0.2s var(--hm-spring);
+}
+.hm-profile:active { transform: scale(0.985); }
+.hm-emblem { flex: 0 0 auto; width: 76px; display: grid; place-items: center; }
+.hm-profile-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 7px; }
+.hm-profile-top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; min-width: 0; }
+.hm-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 9px;
+  border-radius: 8px;
+  background: rgba(226, 181, 62, 0.2);
+  color: var(--hm-gold);
+  font-size: 11px; font-weight: 800; letter-spacing: 0.07em;
+  white-space: nowrap;
+}
+.hm-profile-id { display: inline-flex; align-items: center; gap: 5px; min-width: 0; flex: 1 1 auto; }
+.hm-profile-name {
+  min-width: 0;
+  font-size: 16px; font-weight: 700; color: #fff;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.hm-profile-id svg { flex: 0 0 auto; }
+.hm-profile-meta {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 14px; color: #c4c8d8; white-space: nowrap;
+}
+.hm-profile-meta strong { color: var(--hm-gold); font-weight: 800; }
+.hm-dot { width: 4px; height: 4px; border-radius: 50%; background: #6b7088; flex: 0 0 auto; }
+.hm-profile-btn {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 11px 13px;
+  border-radius: 14px;
+  border: 1.5px solid var(--hm-gold-line);
+  background: rgba(226, 181, 62, 0.1);
+  color: var(--hm-gold);
+  font-size: 14px; font-weight: 800;
+}
+
+/* ── chip pintasan ── */
+.hm-chips {
+  display: flex; gap: 8px;
+  margin: 22px -14px 0;
+  padding: 0 14px 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.hm-chips::-webkit-scrollbar { display: none; }
+.hm-chip {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center;
+  height: 36px; padding: 0 17px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #d6d9e8;
+  font-size: 15px; font-weight: 600;
+  transition: background 0.2s ease, transform 0.18s var(--hm-spring);
+}
+.hm-chip:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.2); }
+
+/* ── section ── */
+.hm-section { margin-top: 30px; }
+.hm-section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 2px 14px; }
+.hm-title {
+  font-size: 22px; line-height: 1.2; font-weight: 700; letter-spacing: -0.01em;
+  color: var(--hm-title);
+}
+.hm-see-all {
+  display: grid; place-items: center;
+  width: 38px; height: 38px; margin: -6px -4px -6px 0;
+  border-radius: 50%;
+  color: var(--hm-title);
+  transition: transform 0.25s var(--hm-spring), background 0.2s ease;
+}
+.hm-see-all:active { transform: translateX(3px) scale(0.92); background: rgba(255, 255, 255, 0.08); }
+
+.hm-row {
+  display: flex; gap: 18px;
+  margin: 0 -14px;
+  padding: 2px 14px 8px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scroll-padding-left: 14px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.hm-row::-webkit-scrollbar { display: none; }
+
+.hm-card {
+  flex: 0 0 var(--hm-card-w);
+  min-width: 0;
+  display: flex; flex-direction: column;
+  padding: 0; border: 0; background: none;
+  color: inherit; text-align: left;
+  scroll-snap-align: start;
+  cursor: pointer;
+  transition: transform 0.22s var(--hm-spring);
+}
+.hm-card:active { transform: scale(0.97); }
+.hm-cover {
+  position: relative; display: block;
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #1a1f33;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+}
+.hm-cover img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.hm-mosaic { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+.hm-card-title {
+  display: block; margin-top: 10px;
+  font-size: 16px; font-weight: 700; color: var(--hm-text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.hm-card-sub {
+  display: block; margin-top: 2px;
+  font-size: 14px; color: var(--hm-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.hm-play {
+  position: absolute; right: 8px; bottom: 8px;
+  width: 38px; height: 38px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: rgba(10, 12, 24, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  transition: transform 0.25s var(--hm-spring), background 0.2s ease;
+}
+.hm-card:active .hm-play { transform: scale(0.9); background: rgba(10, 12, 24, 0.75); }
+
+.hm-skel {
+  background: linear-gradient(90deg, rgba(255,255,255,.05) 0%, rgba(255,255,255,.11) 50%, rgba(255,255,255,.05) 100%);
+  background-size: 200% 100%;
+  animation: hm-shimmer 1.4s linear infinite;
+}
+.hm-skel-line { display: block; height: 14px; border-radius: 999px; }
+@keyframes hm-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+/* ── shelf lama (Baru Diputar, Playlist Kamu, rekomendasi) ikut tema beranda ── */
+.hm-page .shelf { margin: 30px 0 0; }
+.hm-page .shelf-head { margin-bottom: 14px; }
+.hm-page .h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; color: var(--hm-title); }
+.hm-page .empty p { color: var(--hm-muted); }
+
+@media (min-width: 700px) {
+  .hm-page { --hm-card-w: 168px; }
+  .hm-page.page { padding-left: 20px; padding-right: 20px; }
+  .hm-row, .hm-chips { margin-left: -20px; margin-right: -20px; padding-left: 20px; padding-right: 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hm-rise, .hm-skel { animation: none; }
+  .hm-card, .hm-round, .hm-chip, .hm-profile, .hm-avatar, .hm-see-all, .hm-play { transition: none; }
+}
+
+/* ══════════════════════════════════════════════════
+   NEXAA LOGO — bullet + aura + orbit beats 360°
+   ══════════════════════════════════════════════════ */
+
+/* Wrapper — besar cukup untuk orbit ring + beats */
+.hm-logo-wrap {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+}
+
+/* ── Aura rings pulsar ── */
+.hm-logo-aura {
+  position: absolute;
+  inset: -5px;
+  border-radius: 18px;
+  border: 1.5px solid rgba(168, 130, 255, 0.60);
+  animation: nexaa-aura 2.4s ease-out infinite;
+  pointer-events: none;
+}
+.hm-logo-aura--2 {
+  inset: -11px;
+  border-radius: 22px;
+  border-color: rgba(96, 116, 255, 0.28);
+  animation-delay: 1.1s;
+  animation-duration: 2.8s;
+}
+@keyframes nexaa-aura {
+  0%   { transform: scale(0.86); opacity: 0.95; }
+  65%  { transform: scale(1.16); opacity: 0.25; }
+  100% { transform: scale(1.28); opacity: 0; }
+}
+
+/* ── Bullet container ── */
+.hm-logo-bullet {
+  position: relative;
+  z-index: 2;
+  width: 50px;
+  height: 50px;
+  border-radius: 15px;
+  overflow: hidden;
+  background: #0c1020;
+  box-shadow:
+    0 0 0 2px rgba(168, 130, 255, 0.55),
+    0 0 16px 5px rgba(96, 116, 255, 0.32),
+    0 0 32px 10px rgba(128, 76, 230, 0.16);
+  animation: nexaa-bullet-glow 2.6s ease-in-out infinite alternate;
+}
+.hm-logo-bullet img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 13px;
+}
+@keyframes nexaa-bullet-glow {
+  from {
+    box-shadow:
+      0 0 0 2px rgba(168, 130, 255, 0.55),
+      0 0 16px 5px rgba(96, 116, 255, 0.32),
+      0 0 32px 10px rgba(128, 76, 230, 0.16);
+  }
+  to {
+    box-shadow:
+      0 0 0 2px rgba(240, 196, 83, 0.75),
+      0 0 20px 7px rgba(240, 160, 60, 0.42),
+      0 0 42px 14px rgba(200, 80, 230, 0.22);
+  }
+}
+
+/* ── Orbit ring (jalur beat mengelilingi logo) ── */
+.hm-orbit {
+  position: absolute;
+  inset: -18px;          /* radius orbit dari tepi logo */
+  border-radius: 50%;
+  pointer-events: none;
+  animation: nexaa-orbit-spin 3.6s linear infinite;
+  z-index: 3;
+}
+@keyframes nexaa-orbit-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Setiap beat dot ditempatkan di lingkaran orbit pakai transform rotate+translate */
+.hm-orbit-dot {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform-origin: 0 0;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(240,196,83,1), rgba(180,130,255,1));
+  box-shadow: 0 0 5px 2px rgba(240, 196, 83, 0.55);
+  animation: nexaa-dot-pulse 0.5s ease-in-out infinite alternate;
+}
+
+/* 8 dots evenly spaced 45° apart — different beat phases */
+.hm-orbit-dot:nth-child(1)  { transform: rotate(  0deg) translate(46px) rotate(-0deg); animation-delay: 0.00s; animation-duration: 0.52s; }
+.hm-orbit-dot:nth-child(2)  { transform: rotate( 45deg) translate(46px) rotate(-45deg); animation-delay: 0.13s; animation-duration: 0.44s; }
+.hm-orbit-dot:nth-child(3)  { transform: rotate( 90deg) translate(46px) rotate(-90deg); animation-delay: 0.07s; animation-duration: 0.60s; }
+.hm-orbit-dot:nth-child(4)  { transform: rotate(135deg) translate(46px) rotate(-135deg); animation-delay: 0.21s; animation-duration: 0.48s; }
+.hm-orbit-dot:nth-child(5)  { transform: rotate(180deg) translate(46px) rotate(-180deg); animation-delay: 0.04s; animation-duration: 0.55s; }
+.hm-orbit-dot:nth-child(6)  { transform: rotate(225deg) translate(46px) rotate(-225deg); animation-delay: 0.17s; animation-duration: 0.42s; }
+.hm-orbit-dot:nth-child(7)  { transform: rotate(270deg) translate(46px) rotate(-270deg); animation-delay: 0.09s; animation-duration: 0.63s; }
+.hm-orbit-dot:nth-child(8)  { transform: rotate(315deg) translate(46px) rotate(-315deg); animation-delay: 0.25s; animation-duration: 0.50s; }
+
+@keyframes nexaa-dot-pulse {
+  from { opacity: 0.35; box-shadow: 0 0 3px 1px rgba(240,196,83,0.30); }
+  to   { opacity: 1.00; box-shadow: 0 0 7px 3px rgba(240,196,83,0.80); }
+}
+
+/* ── Orbit counter-ring (berputar berlawanan lebih lambat) ── */
+.hm-orbit-2 {
+  position: absolute;
+  inset: -24px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: nexaa-orbit-spin 5.8s linear infinite reverse;
+  z-index: 3;
+}
+.hm-orbit-2 .hm-orbit-dot {
+  width: 3px; height: 3px;
+  margin: -1.5px 0 0 -1.5px;
+  background: linear-gradient(135deg, rgba(130,180,255,1), rgba(200,130,255,1));
+  box-shadow: 0 0 4px 2px rgba(130,180,255,0.50);
+}
+.hm-orbit-2 .hm-orbit-dot:nth-child(1) { transform: rotate(  0deg) translate(52px) rotate(-0deg); animation-delay: 0.08s; animation-duration: 0.68s; }
+.hm-orbit-2 .hm-orbit-dot:nth-child(2) { transform: rotate( 90deg) translate(52px) rotate(-90deg); animation-delay: 0.22s; animation-duration: 0.55s; }
+.hm-orbit-2 .hm-orbit-dot:nth-child(3) { transform: rotate(180deg) translate(52px) rotate(-180deg); animation-delay: 0.14s; animation-duration: 0.72s; }
+.hm-orbit-2 .hm-orbit-dot:nth-child(4) { transform: rotate(270deg) translate(52px) rotate(-270deg); animation-delay: 0.30s; animation-duration: 0.60s; }
+
+/* v15: circular Nexaa mark + radial audio beat visualizer */
+.hm-logo-wrap { width: 76px; height: 76px; isolation: isolate; }
+.hm-logo-bullet {
+  width: 52px; height: 52px; border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(190,168,255,.62), 0 0 18px rgba(139,112,255,.24);
+  animation: none;
+}
+.hm-logo-bullet img { border-radius: 50%; }
+.hm-logo-aura { inset: -4px; border-radius: 50%; border-color: rgba(184,160,255,.48); }
+.hm-logo-aura--2 { inset: -9px; border-radius: 50%; border-color: rgba(134,151,255,.22); }
+.hm-orbit, .hm-orbit-2 { display: none; }
+.hm-beat-ring {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  border-radius: 50%;
+}
+.hm-beat-ring i {
+  --angle: calc(var(--beat-i) * 15deg);
+  --height: 5px;
+  position: absolute; left: 50%; top: 50%;
+  width: 2.5px; height: var(--height); border-radius: 99px;
+  background: linear-gradient(to bottom, #f1d6a0, #bba7ff);
+  box-shadow: 0 0 5px rgba(192,166,255,.32);
+  transform: translate(-50%,-50%) rotate(var(--angle)) translateY(-34px);
+  transform-origin: center;
+  opacity: .62;
+  animation: nexaa-audio-beat 1s ease-in-out infinite alternate;
+  animation-delay: calc(var(--beat-i) * -0.071s);
+}
+/* v16: visualizer selalu bergerak, tidak bergantung pada status lagu */
+.hm-logo-wrap:not(.is-playing) .hm-beat-ring i { animation-play-state: running; opacity: .82; }
+.hm-beat-ring i:nth-child(3n) { animation-duration: .43s; }
+.hm-beat-ring i:nth-child(3n + 1) { animation-duration: .61s; }
+.hm-beat-ring i:nth-child(3n + 2) { animation-duration: .78s; }
+@keyframes nexaa-audio-beat {
+  0% { height: 3px; opacity: .48; }
+  45% { height: 8px; opacity: .9; }
+  100% { height: 10px; opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Beat logo tetap hidup walau preferensi reduced-motion aktif. */
+  .hm-beat-ring i { animation-duration: 1.25s; }
+  .hm-logo-aura, .hm-logo-aura--2 { animation: none !important; }
+}
+
+
+/* v23 — equalizer radial mengelilingi logo; bukan orbit/dot yang berputar.
+   Tiap bar mengarah keluar dari logo dan melonjak dengan timing berbeda. */
+.hm-logo-wrap {
+  width: 76px; height: 76px; isolation: isolate;
+  display: grid; place-items: center; flex: 0 0 76px;
+}
+.hm-logo-bullet {
+  position: relative; z-index: 2; width: 50px; height: 50px;
+  border-radius: 50%; overflow: hidden; background: #090b15;
+  box-shadow: 0 0 0 1px rgba(205,190,255,.48), 0 0 12px rgba(137,111,255,.16);
+}
+.hm-logo-bullet img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.hm-logo-aura, .hm-logo-aura--2, .hm-orbit, .hm-orbit-2, .hm-orbit-runner,
+.hm-beat-ring { display: none !important; }
+.hm-logo-eq {
+  position: absolute; inset: 0; z-index: 3; border-radius: 50%;
+  pointer-events: none; overflow: visible;
+}
+.hm-logo-eq i {
+  --bar-h: 6px;
+  position: absolute; left: 50%; top: 50%; display: block;
+  width: 2.5px; height: var(--bar-h); border-radius: 99px;
+  background: linear-gradient(180deg, #fff0cc 0%, #d8c4ff 48%, #9b8aff 100%);
+  box-shadow: 0 0 3px rgba(204,169,255,.42), 0 0 7px rgba(245,217,167,.2);
+  transform-origin: center center;
+  transform: translate(-50%, -50%) rotate(var(--eq-angle)) translateY(-34px);
+  animation: nexaa-logo-eq-jump calc(.32s + (var(--eq-i) % 7) * .095s) cubic-bezier(.22,.72,.24,1) infinite;
+  animation-delay: calc(var(--eq-i) * -.067s);
+  will-change: height, opacity;
+}
+.hm-logo-eq i:nth-child(5n + 1) { --peak: 12px; }
+.hm-logo-eq i:nth-child(5n + 2) { --peak: 8px; }
+.hm-logo-eq i:nth-child(5n + 3) { --peak: 15px; }
+.hm-logo-eq i:nth-child(5n + 4) { --peak: 10px; }
+.hm-logo-eq i:nth-child(5n) { --peak: 6px; }
+@keyframes nexaa-logo-eq-jump {
+  0% { height: 2px; opacity: .48; }
+  12% { height: calc(var(--peak, 9px) * .52); opacity: .86; }
+  23% { height: 3px; opacity: .56; }
+  39% { height: var(--peak, 9px); opacity: 1; }
+  48% { height: calc(var(--peak, 9px) * .72); opacity: .92; }
+  63% { height: 2px; opacity: .5; }
+  79% { height: calc(var(--peak, 9px) * .84); opacity: .98; }
+  100% { height: 3px; opacity: .6; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hm-logo-eq i { animation-duration: 1.2s; }
+}
+
+
+/* v28 — branded header lockup: logo + wordmark + restrained audio waveform */
+.hm-header {
+  position: relative;
+  min-height: 82px;
+  isolation: isolate;
+}
+.hm-header::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -34px;
+  top: -28px;
+  width: min(340px, 82vw);
+  height: 132px;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 38% 52%, rgba(125, 78, 255, .15), rgba(64, 94, 255, .055) 42%, transparent 72%);
+  filter: blur(9px);
+}
+.hm-brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.hm-brand-copy { min-width: 0; padding-top: 1px; }
+.hm-brand-name {
+  color: #f3f1ff;
+  font-size: clamp(17px, 5vw, 21px);
+  font-weight: 750;
+  line-height: 1.05;
+  letter-spacing: .19em;
+  white-space: nowrap;
+  text-shadow: 0 0 18px rgba(170, 142, 255, .22);
+}
+.hm-brand-name span {
+  display: block;
+  margin-top: 5px;
+  color: #b9a7ff;
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: .39em;
+}
+.hm-brand-tagline {
+  margin-top: 8px;
+  color: rgba(190, 195, 220, .72);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  white-space: nowrap;
+}
+.hm-brand-wave {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  width: 88px;
+  height: 9px;
+  margin-top: 6px;
+  opacity: .78;
+}
+.hm-brand-wave i {
+  display: block;
+  flex: 1 1 0;
+  height: calc(2px + (var(--wave-i) % 5) * 1.35px);
+  border-radius: 99px;
+  background: linear-gradient(180deg, #d8caff, #8660ff);
+  box-shadow: 0 0 6px rgba(155, 113, 255, .35);
+  transform-origin: center;
+  animation: hm-brand-wave-pulse calc(.55s + (var(--wave-i) % 6) * .13s) ease-in-out infinite alternate;
+  animation-delay: calc(var(--wave-i) * -37ms);
+}
+@keyframes hm-brand-wave-pulse {
+  from { transform: scaleY(.42); opacity: .52; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+.hm-brand-lockup .hm-logo-wrap { width: 66px; height: 66px; }
+.hm-brand-lockup .hm-logo-bullet { width: 46px; height: 46px; border-radius: 50%; }
+.hm-brand-lockup .hm-logo-bullet img { border-radius: 50%; }
+.hm-brand-lockup .hm-logo-eq { inset: -8px; }
+@media (max-width: 380px) {
+  .hm-brand-lockup { gap: 12px; }
+  .hm-brand-lockup .hm-logo-wrap { width: 58px; height: 58px; }
+  .hm-brand-lockup .hm-logo-bullet { width: 42px; height: 42px; }
+  .hm-brand-tagline { font-size: 7px; letter-spacing: .08em; }
+  .hm-brand-name { letter-spacing: .15em; }
+  .hm-brand-wave { margin-top: 5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hm-brand-wave i { animation: none; }
+}
+
+
+/* v29 — editorial premium header: layered glass, precision accents, cleaner hierarchy */
+.hm-header {
+  min-height: 94px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  padding: 13px 12px 13px 11px;
+  border: 1px solid rgba(184, 162, 255, .13);
+  border-radius: 24px;
+  background:
+    radial-gradient(ellipse at 12% 50%, rgba(127, 79, 255, .17), transparent 43%),
+    radial-gradient(ellipse at 80% 0%, rgba(68, 96, 220, .10), transparent 47%),
+    linear-gradient(120deg, rgba(19, 20, 43, .83), rgba(12, 14, 31, .64) 62%, rgba(20, 18, 42, .76));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.045), 0 12px 30px rgba(0,0,0,.13);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  overflow: hidden;
+}
+.hm-header::before {
+  left: -38px;
+  top: -42px;
+  width: 245px;
+  height: 172px;
+  background: radial-gradient(ellipse at 45% 52%, rgba(137, 92, 255, .23), rgba(75, 88, 231, .08) 44%, transparent 73%);
+  filter: blur(13px);
+}
+.hm-header::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 93px;
+  right: 76px;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(176, 144, 255, .48), rgba(114, 143, 255, .18), transparent);
+  pointer-events: none;
+}
+.hm-brand-lockup { gap: 14px; }
+.hm-brand-lockup .hm-logo-wrap {
+  width: 70px;
+  height: 70px;
+  filter: drop-shadow(0 0 13px rgba(139, 91, 255, .18));
+}
+.hm-brand-lockup .hm-logo-bullet {
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(206, 192, 255, .28);
+  box-shadow: 0 0 0 4px rgba(138, 100, 255, .045), inset 0 0 12px rgba(148, 101, 255, .11), 0 4px 16px rgba(0,0,0,.28);
+  background: #080914;
+}
+.hm-brand-copy { padding-top: 0; }
+.hm-brand-name {
+  font-size: clamp(17px, 5vw, 22px);
+  letter-spacing: .22em;
+  font-weight: 780;
+  text-shadow: 0 0 22px rgba(170, 142, 255, .25);
+}
+.hm-brand-name span {
+  margin-top: 4px;
+  font-size: 9px;
+  letter-spacing: .48em;
+  color: #c3b4ff;
+}
+.hm-brand-tagline {
+  margin-top: 7px;
+  font-size: 7px;
+  letter-spacing: .16em;
+  color: rgba(206, 208, 235, .68);
+}
+.hm-brand-wave {
+  width: 72px;
+  height: 7px;
+  gap: 2px;
+  margin-top: 5px;
+  opacity: .9;
+}
+.hm-brand-wave i {
+  box-shadow: 0 0 8px rgba(155, 113, 255, .45);
+}
+.hm-header .hm-round {
+  width: 43px;
+  height: 43px;
+  border: 1px solid rgba(203, 191, 255, .14);
+  background: linear-gradient(145deg, rgba(151, 131, 226, .18), rgba(255,255,255,.055));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 4px 14px rgba(0,0,0,.14);
+}
+.hm-header .hm-round:active { background: rgba(155, 125, 255, .24); }
+@media (max-width: 380px) {
+  .hm-header { min-height: 82px; padding: 10px 9px; border-radius: 21px; }
+  .hm-brand-lockup { gap: 10px; }
+  .hm-brand-lockup .hm-logo-wrap { width: 58px; height: 58px; }
+  .hm-brand-lockup .hm-logo-bullet { width: 41px; height: 41px; }
+  .hm-brand-lockup .hm-logo-eq { inset: -7px; }
+  .hm-brand-name { font-size: 17px; letter-spacing: .16em; }
+  .hm-brand-name span { font-size: 8px; letter-spacing: .38em; }
+  .hm-brand-tagline { font-size: 6px; letter-spacing: .08em; }
+  .hm-brand-wave { display: none; }
+  .hm-header .hm-round { width: 39px; height: 39px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hm-brand-wave i { animation: none; }
+}
