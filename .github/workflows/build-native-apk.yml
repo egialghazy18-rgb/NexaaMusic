@@ -5,6 +5,11 @@ on:
   push:
     paths:
       - "android-native/**"
+      - "lib/**"
+      - "app/**"
+      - "components/**"
+      - "package.json"
+      - "package-lock.json"
       - ".github/workflows/build-native-apk.yml"
 
 permissions:

@@ -286,13 +286,20 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     const p = ytRef.current;
     if (!p || !readyRef.current) return false;
     setLoading(true);
-    // watchdog utk kandidat alternatif juga
     clearTimeout(watchdogRef.current);
+
+    const candidateId = videoId;
+    const parentTrackId = currentIdRef.current;
     watchdogRef.current = setTimeout(() => {
+      // Abaikan timer usang jika lagu atau kandidat sudah berubah.
+      if (currentIdRef.current !== parentTrackId) return;
+      if (altCandidatesRef.current?.forId !== parentTrackId) return;
+      if (p !== ytRef.current) return;
+      if (p.getVideoData?.()?.video_id !== candidateId) return;
+      if (!altTriedRef.current.has(candidateId)) return;
+
       const S = window.YT?.PlayerState;
-      const st = p?.getPlayerState?.();
-      // Kandidat alternatif harus benar-benar PLAYING; PAUSED/CUED/UNSTARTED
-      // diperlakukan sebagai kandidat gagal supaya fallback lanjut/skip.
+      const st = p.getPlayerState?.();
       if (S && st === S.PLAYING) {
         setLoading(false);
         return;
@@ -341,7 +348,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             altTriedRef.current.has(x)
           ).length;
           const nextAlt =
-            tried < 6
+            tried < 4
               ? altCandidatesRef.current.ids.find(
                   (x) => !altTriedRef.current.has(x)
                 )

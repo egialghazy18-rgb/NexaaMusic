@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
+import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -20,6 +21,25 @@ import com.google.common.util.concurrent.ListenableFuture
 class MainActivity : AppCompatActivity() {
     private var controllerFuture: ListenableFuture<MediaController>? = null
     private var webView: WebView? = null
+
+    inner class NativeAudioBridge {
+        @JavascriptInterface
+        fun play(url: String, title: String, artwork: String) {
+            runOnUiThread {
+                val uri = runCatching { Uri.parse(url) }.getOrNull() ?: return@runOnUiThread
+                if (uri.scheme != "https" && uri.scheme != "http") return@runOnUiThread
+                if (uri.host.isNullOrBlank()) return@runOnUiThread
+                playUrl(url, title, artwork.ifBlank { null })
+            }
+        }
+
+        @JavascriptInterface
+        fun stop() {
+            runOnUiThread {
+                try { controllerFuture?.get()?.pause() } catch (_: Exception) {}
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +95,17 @@ class MainActivity : AppCompatActivity() {
             settings.domStorageEnabled = true
             settings.mediaPlaybackRequiresUserGesture = false
             webChromeClient = WebChromeClient()
-            webViewClient = WebViewClient()
+            webViewClient = object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(
+                    view: WebView,
+                    request: android.webkit.WebResourceRequest
+                ): Boolean {
+                    val uri = request.url
+                    return uri.scheme != "https" ||
+                        uri.host != "nexaastudiov34.vercel.app"
+                }
+            }
+            addJavascriptInterface(NativeAudioBridge(), "NexaNativeAudio")
             loadUrl("https://nexaastudiov34.vercel.app/")
         }
         webView = web
